@@ -5,10 +5,6 @@ import sys
 import numpy as np
 import time
 
-# Tkinter
-import tkinter as tk
-from tkinter import BOTH, E, W, S, N, messagebox
-
 # OpenGL
 import pygame as pg
 from pygame.locals import *
@@ -16,10 +12,11 @@ from pygame.locals import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
 
+from win32api import ShowCursor
+
 ##############
 # Paramètres #
 ##############
-from win32api import ShowCursor
 
 fps = 40
 dt = 1 / 40
@@ -27,12 +24,6 @@ dt = 1 / 40
 weightScale = 1000  # L'univers est X fois plus grand que les valeurs d'initialisation
 distanceScale = 1000  # L'univers est X fois plus grand que les valeurs d'initialisation
 
-widthCanvasModifier = 0
-heightCanvasModifier = 0
-distanceCanvasScale = pow(10, 8) / distanceScale  # Ici le zoom du canvas
-
-width = 1000  # Epaisseur de la fenêtre
-height = 1000  # Hauteur de la fenêtre
 G = 6.67408 * pow(10, -11)
 
 showTrace = False
@@ -170,82 +161,6 @@ class OpenGLVisuals:
                 glVertex3f(corps.history[i + 1][0], corps.history[i + 1][1], corps.history[i + 1][2])
                 glVertex3f(corps.history[i][0], corps.history[i][1], corps.history[i][2])
                 glEnd()
-
-
-class TKinterVisuals(tk.Frame):
-    def __init__(self, universe):  # jusqua = donnée supplémentaire
-        self.root = tk.Tk()
-        tk.Frame.__init__(self, self.root)
-
-        self.universe = universe
-
-        self.root.title("Simulateur de système stellaire")
-        self.pack(fill=BOTH, expand=True)
-        self.canvas = tk.Canvas(self, width=width, height=height, borderwidth=0, highlightthickness=0, bg="black")
-        self.canvas.grid(row=0, column=0, rowspan=2)
-
-        self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
-        self.initGUI()
-
-        self.loop()
-
-    def on_closing(self):
-        self.root.destroy()
-        sys.exit()
-
-    def initGUI(self):
-        self.root.bind('<Button-1>', self.zoomIn)
-        self.root.bind('<Button-3>', self.zoomOut)
-        self.root.bind("<KeyPress>", self.keydown)
-        self.canvas.pack()
-        self.canvas.focus_set()
-
-    def zoomIn(self, event):
-        global distanceCanvasScale
-        distanceCanvasScale = distanceCanvasScale * 0.8
-
-    def zoomOut(self, event):
-        global distanceCanvasScale
-        distanceCanvasScale = distanceCanvasScale * 1.2
-
-    def keydown(self, event):
-        global heightCanvasModifier, widthCanvasModifier, showTrace, pause
-        if event.char == 's':
-            heightCanvasModifier = heightCanvasModifier - height / 20
-        elif event.char == 'z':
-            heightCanvasModifier = heightCanvasModifier + height / 20
-        elif event.char == 'q':
-            widthCanvasModifier = widthCanvasModifier + width / 20
-        elif event.char == 'd':
-            widthCanvasModifier = widthCanvasModifier - width / 20
-        elif event.char == '&':
-            showTrace = not showTrace
-        elif event.char == 'é':
-            pause = not pause
-
-    def loop(self):
-        while 1:
-            self.canvas.delete("all")
-            for corps in self.universe.corpsList:
-                self.draw(corps)
-            self.root.update()
-            time.sleep(1 / fps)
-
-    def draw(self, corps):
-        self.canvas.create_oval(
-            corps.coordinates[0] / distanceCanvasScale - corps.size + widthCanvasModifier + width / 2,
-            corps.coordinates[1] / distanceCanvasScale - corps.size + heightCanvasModifier + height / 2,
-            corps.coordinates[0] / distanceCanvasScale + corps.size + widthCanvasModifier + width / 2,
-            corps.coordinates[1] / distanceCanvasScale + corps.size + heightCanvasModifier + height / 2,
-            fill=corps.color)
-        if showTrace and len(corps.history) >= 2:
-            for i in range(0, len(corps.history) - 1):
-                self.canvas.create_line(
-                    corps.history[i][0] / distanceCanvasScale + widthCanvasModifier + width / 2,
-                    corps.history[i][1] / distanceCanvasScale + heightCanvasModifier + height / 2,
-                    corps.history[i + 1][0] / distanceCanvasScale + widthCanvasModifier + width / 2,
-                    corps.history[i + 1][1] / distanceCanvasScale + heightCanvasModifier + height / 2,
-                    fill=corps.color)
 
 
 ###########
