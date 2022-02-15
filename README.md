@@ -1,13 +1,13 @@
-# Universe Simulator
+# Universe Simulator  
 ***
-###Project presentation
+###Project presentation  
 This is a personal small project that I made on february 2022.
 This is a simulation of our universe with real Newton Forces.
 For this project I used Numpy for matrix calculations and OpenGL for the 3D part (Tkinter for the 2D part but not available anymore)
 ![video](./img/vid1.gif)
 ***
-###How to use
-Install all dependencies, and launch !
+###How to use  
+Install all dependencies, and launch !  
 > zqsd to move in the environment  
 > w to enable history lines, and show XYZ vectors  
 > x to pause the simulation (you can still move)
