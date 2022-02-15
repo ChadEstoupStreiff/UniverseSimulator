@@ -34,9 +34,9 @@ if __name__ == "__main__":
     u.launch()
 ````
 Here is what preset you can use:
-> heart()
+> heart()  
 ![video](./img/heart.gif)  
-> star()
+> star()  
 ![video](./img/star.gif)  
 
 And you can do your own by editing the code !
