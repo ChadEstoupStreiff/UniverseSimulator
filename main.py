@@ -44,7 +44,7 @@ class OpenGLVisuals:
         ShowCursor(False)
 
         self.camLocations = [-100000000, -100000000, 40000000]
-        self.camAngles = [np.pi/2, -np.pi/4]
+        self.camAngles = [np.pi / 2, -np.pi / 4]
 
         print("Lancement de la boucle de graphisme")
         self.loop()
@@ -144,14 +144,16 @@ class OpenGLVisuals:
             for j in range(0, 360, nColomn):  # 20 segments
                 glBegin(GL_LINES)
                 glVertex3f(
-                    coo[0] + np.cos(2*np.pi*i/360) * np.cos(2*np.pi*j/360) * corps.size * 100000,
-                    coo[1] + np.sin(2*np.pi*i/360) * np.cos(2*np.pi*j/360) * corps.size * 100000,
-                    coo[2] + np.sin(2*np.pi*j/360) * corps.size * 100000
+                    coo[0] + np.cos(2 * np.pi * i / 360) * np.cos(2 * np.pi * j / 360) * corps.size * 100000,
+                    coo[1] + np.sin(2 * np.pi * i / 360) * np.cos(2 * np.pi * j / 360) * corps.size * 100000,
+                    coo[2] + np.sin(2 * np.pi * j / 360) * corps.size * 100000
                 )
                 glVertex3f(
-                    coo[0] + np.cos(2*np.pi*i/360 + 2*np.pi*nLines/360) * np.cos(2*np.pi*j/360 + 2*np.pi*nColomn/360) * corps.size * 100000,
-                    coo[1] + np.sin(2*np.pi*i/360 + 2*np.pi*nLines/360) * np.cos(2*np.pi*j/360 + 2*np.pi*nColomn/360) * corps.size * 100000,
-                    coo[2] + np.sin(2*np.pi*j/360 + 2*np.pi*nColomn/360) * corps.size * 100000
+                    coo[0] + np.cos(2 * np.pi * i / 360 + 2 * np.pi * nLines / 360) * np.cos(
+                        2 * np.pi * j / 360 + 2 * np.pi * nColomn / 360) * corps.size * 100000,
+                    coo[1] + np.sin(2 * np.pi * i / 360 + 2 * np.pi * nLines / 360) * np.cos(
+                        2 * np.pi * j / 360 + 2 * np.pi * nColomn / 360) * corps.size * 100000,
+                    coo[2] + np.sin(2 * np.pi * j / 360 + 2 * np.pi * nColomn / 360) * corps.size * 100000
                 )
                 glEnd()
 
@@ -214,10 +216,6 @@ class Universe(threading.Thread):
 
         print("Initialisation de l'univers")
         self.corpsList = []
-        solar(self)
-
-        self.start()
-        self.graphics = OpenGLVisuals(self)
 
     def appendCorps(self, c):
         self.corpsList.append(c)
@@ -245,6 +243,10 @@ class Universe(threading.Thread):
                     corps.move()
 
             time.sleep(dt)
+
+    def launch(self):
+        self.start()
+        OpenGLVisuals(self)
 
 
 ###########
@@ -288,4 +290,6 @@ def solar(universe):
 ########
 
 if __name__ == "__main__":
-    uA = Universe()
+    u = Universe()
+    solar(u)
+    u.launch()
