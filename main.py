@@ -27,7 +27,7 @@ distanceScale = 1000  # L'univers est X fois plus grand que les valeurs d'initia
 G = 6.67408 * pow(10, -11)
 
 showTrace = False
-pause = False
+pause = True
 
 
 ############
@@ -271,6 +271,9 @@ def solar(universe):
     universe.appendCorps(Corps(np.array([0, 0, 255]), 10, 5.972 * pow(10, 24),
                                np.array([1.49 * pow(10, 11), 0, 0]),
                                np.array([0, -6e+04, -1e+05])))
+    universe.appendCorps(Corps(np.array([0, 255, 255]), 10, 5.972 * pow(10, 24),
+                               np.array([0.8 * pow(10, 11), 0, 0]),
+                               np.array([0, -5e+04, -1e+05])))
     universe.appendCorps(Corps(np.array([0, 255, 0]), 10, 5.972 * pow(10, 24),
                                np.array([1.49 * pow(10, 10), 0, 0]),
                                np.array([0, -6e+04, -7e+05])))
@@ -283,6 +286,18 @@ def solar(universe):
     universe.appendCorps(Corps(np.array([255, 255, 255]), 20, 1.989 * pow(10, 30),
                                np.array([0, 0, 0]),
                                np.array([0, -6e+04, 0])))
+
+
+def heart(universe):
+    universe.appendCorps(Corps(np.array([255, 0, 0]), 10, 5.972 * pow(10, 24),
+                               np.array([100000000, 0, 1.49 * pow(10, 10)]),
+                               np.array([3e+05, 0, 5e+05])))
+    universe.appendCorps(Corps(np.array([255, 0, 0]), 10, 5.972 * pow(10, 24),
+                               np.array([-100000000, 0, 1.49 * pow(10, 10)]),
+                               np.array([-3e+05, 0, 5e+05])))
+    universe.appendCorps(Corps(np.array([255, 255, 255]), 20, 1.989 * pow(10, 30),
+                               np.array([0, 0, 0]),
+                               np.array([0, 0, 0])))
 
 
 ########
