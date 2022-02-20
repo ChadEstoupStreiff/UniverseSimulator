@@ -12,22 +12,21 @@ from pygame.locals import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
 
-from win32api import ShowCursor
-
 ##############
 # Paramètres #
 ##############
 
-fps = 40
-dt = 1 / 40
+fps = 70  # Number of targeted images
+ticks = 40  # Number of ticks
 
-weightScale = 1000  # L'univers est X fois plus grand que les valeurs d'initialisation
-distanceScale = 1000  # L'univers est X fois plus grand que les valeurs d'initialisation
+weightScale = 1000  # The univers is X times bigger than weights initialisation variables
+distanceScale = 1000  # The univers is X times bigger than distance initialisation variables
 
-G = 6.67408 * pow(10, -11)
+G = 6.67408 * pow(10, -11)  # Universe constant
 
-showTrace = False
-pause = True
+nHistory = 500  # Number of movement history points
+showTrace = False  # Show history trace (can be change inside simulation with key 'w')
+pause = True  # Put movements in pause mode (can be change inside simulation with 'x' key)
 
 
 ############
@@ -41,10 +40,10 @@ class OpenGLVisuals:
         pg.init()
         self.display = (1680, 1050)
         pg.display.set_mode(self.display, DOUBLEBUF | OPENGL)
-        ShowCursor(False)
 
         self.camLocations = [-100000000, -100000000, 40000000]
-        self.camAngles = [np.pi / 2, -np.pi / 4]
+        self.camAngles = [np.pi / 6, -np.pi / 10]
+        self.lastTick = 0
 
         print("Lancement de la boucle de graphisme")
         self.loop()
@@ -63,8 +62,8 @@ class OpenGLVisuals:
                         pause = not pause
                 if event.type == pg.MOUSEMOTION:
                     # apply the look up and down
-                    self.camAngles[0] -= (event.pos[0] - self.display[0] / 2) / 1000
-                    self.camAngles[1] -= (event.pos[1] - self.display[1] / 2) / 1000
+                    self.camAngles[0] -= (event.pos[0] - self.display[0] / 2) / 5000
+                    self.camAngles[1] -= (event.pos[1] - self.display[1] / 2) / 5000
 
                     pg.mouse.set_pos([self.display[0] / 2, self.display[1] / 2])
 
@@ -75,24 +74,27 @@ class OpenGLVisuals:
                           np.sin(self.camAngles[0]) * np.cos(self.camAngles[1]),
                           np.sin(self.camAngles[1])]
 
+            a = 20000000 * (time.time() - self.lastTick)
+            self.lastTick = time.time()
+
             if keypress[pg.K_s]:
-                self.camLocations[0] += -viewVector[0] * 1000000
-                self.camLocations[1] += -viewVector[1] * 1000000
-                self.camLocations[2] += -viewVector[2] * 1000000
+                self.camLocations[0] += -viewVector[0] * a
+                self.camLocations[1] += -viewVector[1] * a
+                self.camLocations[2] += -viewVector[2] * a
             if keypress[pg.K_z]:
-                self.camLocations[0] += viewVector[0] * 1000000
-                self.camLocations[1] += viewVector[1] * 1000000
-                self.camLocations[2] += viewVector[2] * 1000000
+                self.camLocations[0] += viewVector[0] * a
+                self.camLocations[1] += viewVector[1] * a
+                self.camLocations[2] += viewVector[2] * a
             if keypress[pg.K_q]:
-                self.camLocations[0] += -viewVector[1] * 1000000
-                self.camLocations[1] += viewVector[0] * 1000000
+                self.camLocations[0] += -viewVector[1] * a
+                self.camLocations[1] += viewVector[0] * a
             if keypress[pg.K_d]:
-                self.camLocations[0] += viewVector[1] * 1000000
-                self.camLocations[1] += -viewVector[0] * 1000000
-            if keypress[pg.K_UP]:
-                self.camLocations[2] += 1000000
-            if keypress[pg.K_DOWN]:
-                self.camLocations[2] -= 1000000
+                self.camLocations[0] += viewVector[1] * a
+                self.camLocations[1] += -viewVector[0] * a
+            if keypress[pg.K_SPACE]:
+                self.camLocations[2] += a
+            if keypress[pg.K_LCTRL]:
+                self.camLocations[2] -= a
 
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
@@ -184,7 +186,7 @@ class Corps:
 
     def move(self):
         self.history.append(np.copy(self.coordinates))
-        if len(self.history) > 500:
+        if len(self.history) > nHistory:
             self.history.remove(self.history[0])
 
         self.coordinates = self.coordinates + self.velocity
@@ -222,6 +224,7 @@ class Universe(threading.Thread):
 
     def run(self):
         while 1:
+            dt = 1 / ticks
             if not pause:
                 # On boucle tous les astres
                 for i in range(len(self.corpsList) - 1):

@@ -7,6 +7,7 @@ For this project I used Numpy for matrix calculations and OpenGL for the 3D part
 ## How to use  
 Install all dependencies, and launch !  
 > 'zqsd' to move in the environment  
+> 'space / left ctrl' to move upward and downward
 > 'w' to enable history lines, and show XYZ vectors  
 > 'x' to pause the simulation (you can still move)
 ````PYTHON
