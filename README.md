@@ -42,6 +42,6 @@ Here is what preset you can use:
 
 And you can do your own by editing the code !
 ## Code presentation
-````PYTHON
-ONE DAY, I'll explain POO, thread and 3D part in this project :)
+````
+ONE DAY, I'll explain POO, threads and 3D part in this project :)
 ````
